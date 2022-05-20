@@ -1,7 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:weather_application/data/location.dart';
+import 'package:weather_application/data/utils.dart';
 import 'package:weather_application/data/weather_api_handler.dart';
 import 'package:weather_application/models/weather_object.dart';
-import 'package:weather_application/widgets/date_today.dart';
+import 'package:weather_application/screens/search_city_screen.dart';
 import 'package:weather_application/widgets/weather_detail.dart';
 import 'package:weather_application/widgets/weather_today.dart';
 import 'package:weather_application/widgets/week_forecast.dart';
@@ -15,36 +22,64 @@ class WeatherForecastScreen extends StatefulWidget {
 
 class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
   Future<WeatherForecast>? weaterForecast;
-  String cityName = "Санкт-Петербург";
+  String cityName = "Уфа";
+  LinearGradient backgroundGradient =
+      const LinearGradient(colors: [Colors.cyan]);
 
   @override
   void initState() {
     super.initState();
     weaterForecast = WeatherAPIHandler.getForecast(cityName: cityName);
+    backgroundGradient = Utils.getBackgroundGradient();
   }
 
-  // background: linear-gradient(90deg, #1f005c, #280471, #300b87, #39139d, #401cb5, #4824cd, #4e2de6, #5436ff);
+  void onGetLocateTap() async {
+    Position pos = await Location.getPos();
+    log('${pos.latitude} - ${pos.longitude}');
+    weaterForecast = WeatherAPIHandler.getForecastByLocation(pos: pos);
+  }
+
+  void onSearchCityTap() async {
+    var searchedCity = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                SearchCity(backgroundGradient: backgroundGradient)));
+    if (searchedCity != null) {
+      setState(() {
+        weaterForecast = WeatherAPIHandler.getForecast(cityName: searchedCity);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(0.8, 1),
-            colors: <Color>[
-              Color(0xff1f005c),
-              Color(0xff280471),
-              Color(0xff300b87),
-              Color(0xff39139d),
-              Color(0xff401cb5),
-              Color(0xff4824cd),
-              Color(0xff4e2de6),
-              Color(0xff5436ff),
-            ], // Gradient from https://learnui.design/tools/gradient-generator.html
-            tileMode: TileMode.mirror,
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(Utils.dateFormat(DateTime.now()),
+            style: const TextStyle(
+                fontSize: 21,
+                color: Colors.white,
+                fontFamily: 'MullerRegular')),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(FontAwesomeIcons.locationArrow, color: Colors.white),
+          onPressed: onGetLocateTap,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(FontAwesomeIcons.city, color: Colors.white),
+            onPressed: onSearchCityTap,
           ),
+          const SizedBox(width: 10)
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: backgroundGradient,
         ),
         child: ListView(
           children: [
@@ -55,17 +90,24 @@ class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
                   return Column(
                     children: [
                       const SizedBox(height: 30),
-                      DateToday(snapshot: snapshot),
-                      const SizedBox(height: 30),
                       WeatherToday(snapshot: snapshot),
-                      const SizedBox(height: 35),
+                      const SizedBox(height: 55),
                       WeatherDetail(snapshot: snapshot),
-                      const SizedBox(height: 35),
+                      const SizedBox(height: 55),
                       WeekForecast(snapshot: snapshot),
                     ],
                   );
                 } else {
-                  return const Center(child: CircularProgressIndicator());
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      SizedBox(height: 325),
+                      SpinKitChasingDots(
+                        color: Colors.white,
+                      ),
+                    ],
+                  );
                 }
               },
             ),

@@ -14,13 +14,13 @@ class WeatherDetail extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         DetailColums(
-            icon: FontAwesomeIcons.thermometer1,
-            value: '${mainInfo!.pressure}',
-            measureUnit: 'мм рт. ст.'),
-        DetailColums(
             icon: FontAwesomeIcons.cloudRain,
-            value: '${mainInfo.humidity}',
+            value: '${mainInfo!.humidity}',
             measureUnit: '%'),
+        DetailColums(
+            icon: FontAwesomeIcons.thermometer1,
+            value: '${mainInfo.pressure}',
+            measureUnit: 'мм рт. ст.'),
         DetailColums(
             icon: FontAwesomeIcons.wind,
             value: '$speedOfWind',

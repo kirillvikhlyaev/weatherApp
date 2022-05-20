@@ -47,7 +47,8 @@ class DayOfWeekCard extends StatelessWidget {
       height: 130,
       width: 150,
       child: Card(
-        color: Color.fromARGB(255, 104, 72, 247),
+        elevation: 0,
+        color: Color.fromARGB(50, 255, 255, 255),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),

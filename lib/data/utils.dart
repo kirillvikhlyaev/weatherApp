@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_application/data/gradients.dart';
 import 'package:weather_application/models/weather_object.dart';
 
 abstract class Utils {
@@ -53,6 +56,21 @@ abstract class Utils {
         } else {
           return FontAwesomeIcons.cloudSun;
         }
+    }
+  }
+
+  static LinearGradient getBackgroundGradient() {
+    final now = new DateTime.now();
+    int currentTime = int.parse(DateFormat('H').format(now));
+    log('$currentTime');
+    if (currentTime >= 6 && currentTime < 12) {
+      return Gradients.getSunriseGradient();
+    } else if (currentTime >= 12 && currentTime < 18) {
+      return Gradients.getDayGradient();
+    } else if (currentTime >= 18 && currentTime < 23) {
+      return Gradients.getSunsetGradient();
+    } else {
+      return Gradients.getNightGradient();
     }
   }
 }
