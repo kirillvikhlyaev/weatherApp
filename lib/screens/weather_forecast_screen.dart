@@ -36,7 +36,9 @@ class _WeatherForecastScreenState extends State<WeatherForecastScreen> {
   void onGetLocateTap() async {
     Position pos = await Location.getPos();
     log('${pos.latitude} - ${pos.longitude}');
-    weaterForecast = WeatherAPIHandler.getForecastByLocation(pos: pos);
+    setState(() {
+      weaterForecast = WeatherAPIHandler.getForecastByLocation(pos: pos);
+    });
   }
 
   void onSearchCityTap() async {
