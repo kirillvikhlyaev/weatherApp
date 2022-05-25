@@ -3,4 +3,4 @@
 <p align="center">Реализован поиск по названию города и определение геолокации.
 Погода доставляется с сайта openweathermap.org в формате JSON.</p>
 
-![Image alt](https://github.com/kirillvikhlyaev/weatherApp/raw/main/screenshots/main_screen.png)
+![Image alt](https://github.com/kirillvikhlyaev/weatherApp/main/screenshots/main_screen.PNG)
